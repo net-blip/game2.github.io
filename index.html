@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego de Palabras Mejorado</title>
+    <title>Enhanced Word Game</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
     <style>
         body {
@@ -142,7 +142,6 @@
             margin: 10px 0;
             display: inline-block;
         }
-
         @media (max-width: 480px) {
             .button {
                 padding: 10px;
@@ -159,12 +158,12 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Juego de Palabras Mejorado</h1>
+            <h1>Enhanced Word Game</h1>
         </div>
         <div class="game-area">
-            <div class="timer">Tiempo restante: <span id="time">60</span> segundos</div>
-            <div class="score">Puntuación: <span id="score">0</span></div>
-            <img id="catImage" src="gato.jpg" alt="Gato con lentes" style="display: none; width: 300px; margin: 0 auto; border-radius: 5%;">
+            <div class="timer">Time left: <span id="time">60</span> seconds</div>
+            <div class="score">Score: <span id="score">0</span></div>
+            <img id="catImage" src="gato.jpg" alt="Cat with glasses" style="display: none; width: 300px; margin: 0 auto; border-radius: 5%;">
             <center><div id="noSentencesMessage" class="typing-message"></div></center>
             <div id="sentencesContainer" class="sentence-container">
                 <div class="image-container" id="questionImage"></div>
@@ -172,18 +171,18 @@
                 <div class="sentence" id="questionSentence"></div>
                 <div class="explanation" id="questionExplanation"></div>
             </div>
-            <input type="text" id="answer" placeholder="Ingresa tu respuesta">
-            <center> <button class="button" onclick="checkAnswer()">Enviar</button></center>
+            <input type="text" id="answer" placeholder="Enter your answer">
+            <center> <button class="button" onclick="checkAnswer()">Submit</button></center>
             <div id="feedback" class="feedback"></div>
         </div>
     </div>
     <div class="celebration" id="celebration">
-        <h1>¡Felicidades!</h1>
-        <p>Has completado el juego con una puntuación de <span id="finalScore">0</span></p>
-        <button class="button" onclick="restartGame()">Jugar Otra Vez</button>
+        <h1>Congratulations!</h1>
+        <p>You have completed the game with a score of <span id="finalScore">0</span></p>
+        <button class="button" onclick="restartGame()">Play Again</button>
     </div>
     <script>
-        // Cargar configuración desde localStorage
+        // Load configuration from localStorage
         const config = JSON.parse(localStorage.getItem('config')) || { questions: [] };
         const questions = config.questions;
         let timeLeft = 60;
@@ -191,16 +190,14 @@
         let timer;
         let currentQuestionIndex = 0;
         let gameActive = true;
-
         const catImage = document.getElementById('catImage');
         const noSentencesMessage = document.getElementById('noSentencesMessage');
 
-        // Efecto de máquina de escribir
+        // Typing effect
         function typeWriter() {
-            const message = "No hay oraciones configuradas";
+            const message = "There are no sentences configured";
             noSentencesMessage.innerHTML = '';
             noSentencesMessage.style.width = 'auto';
-
             let i = 0;
             const typingInterval = setInterval(() => {
                 if (i < message.length) {
@@ -241,7 +238,6 @@
             } else {
                 imageContainer.innerHTML = '';
             }
-
             document.getElementById('answer').focus();
         }
 
@@ -268,7 +264,7 @@
             const explanationDiv = document.getElementById('questionExplanation');
 
             if (!userAnswer) {
-                feedbackDiv.textContent = 'Por favor ingresa una respuesta';
+                feedbackDiv.textContent = 'Please enter an answer';
                 feedbackDiv.className = 'feedback incorrect';
                 return;
             }
@@ -282,14 +278,14 @@
                     normalizeAnswer(correctAnswer) === normalizedUserAnswer
                 );
             } else {
-                const expectedAnswers = ["alimentos", "100", "paris"];
+                const expectedAnswers = ["food", "100", "paris"];
                 isCorrect = normalizeAnswer(expectedAnswers[currentQuestionIndex]) === normalizedUserAnswer;
             }
 
             if (isCorrect) {
                 score += 10;
                 document.getElementById('score').textContent = score;
-                feedbackDiv.textContent = '¡Respuesta correcta!';
+                feedbackDiv.textContent = 'Correct answer!';
                 feedbackDiv.className = 'feedback correct';
                 confetti({
                     particleCount: 100,
@@ -297,11 +293,11 @@
                     origin: { y: 0.2 }
                 });
             } else {
-                feedbackDiv.textContent = 'Respuesta incorrecta';
+                feedbackDiv.textContent = 'Incorrect answer';
                 feedbackDiv.className = 'feedback incorrect';
             }
-            explanationDiv.style.display = 'block';
 
+            explanationDiv.style.display = 'block';
             setTimeout(() => {
                 currentQuestionIndex++;
                 if (currentQuestionIndex < questions.length) {
@@ -315,11 +311,9 @@
         function endGame() {
             clearInterval(timer);
             gameActive = false;
-
             document.getElementById('finalScore').textContent = score;
             const celebration = document.getElementById('celebration');
             celebration.style.display = 'flex';
-
             document.querySelector('.game-area').style.opacity = '0.5';
         }
 
@@ -328,12 +322,10 @@
             timeLeft = 60;
             score = 0;
             gameActive = true;
-
             document.getElementById('time').textContent = timeLeft;
             document.getElementById('score').textContent = score;
             document.getElementById('celebration').style.display = 'none';
             document.querySelector('.game-area').style.opacity = '1';
-
             displayCurrentQuestion();
             startTimer();
         }
