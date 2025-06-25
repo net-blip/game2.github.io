@@ -1,320 +1,612 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Juego de Palabras Mejorado</title>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
-<style>
-body {
-font-family: Arial, sans-serif;
-background-color: #FFFFFF;
-color: #000000;
-margin: 0;
-padding: 0;
-overflow-x: hidden;
-}
-.container {
-width: 95%;
-max-width: 600px;
-margin: 0 auto;
-padding: 20px;
-background-color: #E2E2E2;
-border-radius: 10px;
-box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-position: relative;
-z-index: 1;
-}
-.header {
-text-align: center;
-color: #000000;
-}
-.game-area {
-background-color: #FFFFFF;
-padding: 15px;
-border-radius: 10px;
-margin-top: 10px;
-}
-.button {
-background-color: #FCD307;
-color: #000000;
-border: none;
-padding: 8px 15px;
-margin: 5px;
-border-radius: 5px;
-cursor: pointer;
-transition: background-color 0.3s;
-width: 100%;
-box-sizing: border-box;
-}
-.button:hover {
-background-color: #FFBC00;
-}
-input[type="text"] {
-width: 100%;
-padding: 10px;
-margin: 10px 0;
-border: 1px solid #000000;
-border-radius: 5px;
-box-sizing: border-box;
-}
-.timer, .score {
-text-align: center;
-font-size: 1.2em;
-margin: 10px 0;
-}
-.sentence-container {
-margin-bottom: 20px;
-text-align: center;
-min-height: 100px;
-}
-.sentence {
-font-size: 1.2em;
-margin-bottom: 10px;
-}
-.emoji {
-font-size: 2em;
-margin-bottom: 10px;
-}
-.image-container {
-margin-bottom: 10px;
-}
-.image-container img {
-max-width: 100%;
-height: auto;
-}
-.explanation {
-margin-top: 15px;
-padding: 10px;
-background-color: #f0f0f0;
-border-radius: 5px;
-display: none;
-}
-.feedback {
-margin-top: 20px;
-text-align: center;
-font-weight: bold;
-min-height: 24px;
-}
-.correct {
-color: green;
-}
-.incorrect {
-color: red;
-}
-.celebration {
-position: fixed;
-top: 300px;
-left: 0;
-width: 100%;
-background-color: rgba(255, 215, 0, 0.8);
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-z-index: 1000;
-display: none;
-}
-.celebration h1 {
-font-size: 2em;
-color: #fff;
-text-shadow: 2px 2px 4px #000;
-animation: pulse 1s infinite;
-}
-.celebration p {
-font-size: 1.2em;
-color: #fff;
-text-shadow: 1px 1px 2px #000;
-}
-@keyframes pulse {
-0% { transform: scale(1); }
-50% { transform: scale(1.1); }
-100% { transform: scale(1); }
-}
-.typing-message {
-font-size: 1.2rem;
-font-weight: bold;
-color: #ffcb22;
-text-align: center;
-white-space: nowrap;
-overflow: hidden;
-border-right: 3px solid #000;
-margin: 10px 0;
-display: inline-block;
-}
-@media (max-width: 480px) {
-.button {
-padding: 10px;
-}
-.celebration h1 {
-font-size: 1.5em;
-}
-.celebration p {
-font-size: 1em;
-}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Palabras Mejorado</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #FFFFFF;
+            color: #000000;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #E2E2E2;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+        .header {
+            text-align: center;
+            color: #000000;
+            margin-bottom: 20px;
+        }
+        .game-area {
+            background-color: #FFFFFF;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .button {
+            background-color: #FCD307;
+            color: #000000;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        .button:hover {
+            background-color: #FFBC00;
+            transform: scale(1.05);
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 2px solid #000000;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        /* Estilos del reloj creativo */
+        .timer-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .clock {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #FCD307;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border: 4px solid #000;
+        }
+        .clock-face {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            position: relative;
+        }
+        .clock-hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            width: 3px;
+            height: 30px;
+            background-color: red;
+            transform-origin: bottom center;
+            border-radius: 3px;
+            transform: translateX(-50%) rotate(0deg);
+        }
+        .score-display {
+            background-color: #000;
+            color: #FFF;
+            padding: 10px 20px;
+            border-radius: 30px;
+            margin-left: 15px;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        
+        .sentence-container {
+            margin-bottom: 20px;
+            text-align: center;
+            min-height: 100px;
+        }
+        .sentence {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .emoji {
+            font-size: 2.5em;
+            margin: 15px 0;
+        }
+        .explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            display: none;
+            font-style: italic;
+        }
+        .feedback {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1em;
+            min-height: 24px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .correct {
+            color: green;
+            background-color: rgba(0,255,0,0.1);
+        }
+        .incorrect {
+            color: red;
+            background-color: rgba(255,0,0,0.1);
+        }
+        .typing-message {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffcb22;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 3px solid #000;
+            margin: 10px 0;
+            display: inline-block;
+        }
+        .question-image {
+            max-width: 100%;
+            max-height: 200px;
+            margin: 15px auto;
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        
+        /* Celebration styles */
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 215, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+        }
+        .celebration-content {
+            background: rgba(0,0,0,0.8);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(255,215,0,0.7);
+            animation: zoomIn 0.5s ease-out;
+            max-width: 80%;
+        }
+        .celebration h1 {
+            font-size: 3em;
+            color: #FFD700;
+            text-shadow: 0 0 10px #FF0000, 0 0 20px #FF8C00;
+            margin-bottom: 20px;
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+        .celebration p {
+            font-size: 1.8em;
+            color: #FFF;
+            margin-bottom: 30px;
+        }
+        .celebration button {
+            background: #FF4500;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            font-weight: bold;
+        }
+        .celebration button:hover {
+            background: #FF6347;
+            transform: scale(1.05);
+        }
+        
+        /* Game over styles */
+        .game-over {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+        }
+        .game-over-content {
+            background: rgba(0,0,0,0.8);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(255,0,0,0.7);
+            animation: zoomIn 0.5s ease-out;
+            max-width: 80%;
+        }
+        .game-over h1 {
+            font-size: 3em;
+            color: #FFF;
+            text-shadow: 0 0 10px #000;
+            margin-bottom: 20px;
+            animation: pulse 0.5s infinite alternate;
+        }
+        .game-over p {
+            font-size: 1.5em;
+            color: #FFF;
+            margin-bottom: 30px;
+        }
+        .game-over button {
+            background: #FCD307;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            font-weight: bold;
+        }
+        .game-over button:hover {
+            background: #FFD700;
+            transform: scale(1.05);
+        }
+        
+        /* Confetti styles */
+        .confetti {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            opacity: 0.8;
+            z-index: 999;
+        }
+        
+        /* Animations */
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #FFD700, 0 0 20px #FF8C00;
+            }
+            to {
+                text-shadow: 0 0 15px #FFD700, 0 0 30px #FF4500, 0 0 40px #FF0000;
+            }
+        }
+        
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes tick {
+            0% { transform: translateX(-50%) rotate(0deg); }
+            100% { transform: translateX(-50%) rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-<div class="header">
-<h1>Juego de Palabras Mejorado</h1>
-</div>
-<div class="game-area">
-<div class="timer">Tiempo restante: <span id="time">60</span> segundos</div>
-<div class="score">Puntuación: <span id="score">0</span></div>
-<img id="catImage" src="gato.jpg" alt="Gato con lentes" style="display: none; width: 300px; margin: 0 auto; border-radius: 5%;">
-<center><div id="noSentencesMessage" class="typing-message"></div></center>
-<div id="sentencesContainer" class="sentence-container">
-<div class="image-container" id="questionImage"></div>
-<div class="emoji" id="questionEmoji"></div>
-<div class="sentence" id="questionSentence"></div>
-<div class="explanation" id="questionExplanation"></div>
-</div>
-<input type="text" id="answer" placeholder="Ingresa tu respuesta">
-<center> <button class="button" onclick="checkAnswer()">Enviar</button></center>
-<div id="feedback" class="feedback"></div>
-</div>
-</div>
-<div class="celebration" id="celebration">
-<h1>¡Felicidades!</h1>
-<p>Has completado el juego con una puntuación de <span id="finalScore">0</span></p>
-<button class="button" onclick="restartGame()">Jugar Otra Vez</button>
-</div>
-<script>
-// Cargar configuración desde localStorage
-const config = JSON.parse(localStorage.getItem('config')) || { questions: [] };
-const questions = config.questions;
-let timeLeft = 60;
-let score = 0;
-let timer;
-let currentQuestionIndex = 0;
-let gameActive = true;
-const catImage = document.getElementById('catImage');
-const noSentencesMessage = document.getElementById('noSentencesMessage');
-// Efecto de máquina de escribir
-function typeWriter() {
-const message = "No hay oraciones configuradas";
-noSentencesMessage.innerHTML = '';
-noSentencesMessage.style.width = 'auto';
-let i = 0;
-const typingInterval = setInterval(() => {
-if (i < message.length) {
-noSentencesMessage.textContent += message.charAt(i);
-i++;
-} else {
-clearInterval(typingInterval);
-noSentencesMessage.style.borderRight = 'none';
-}
-}, 100);
-}
-if (questions.length === 0) {
-catImage.style.display = 'block';
-typeWriter();
-} else {
-catImage.style.display = 'none';
-displayCurrentQuestion();
-startTimer();
-}
-function displayCurrentQuestion() {
-if (currentQuestionIndex >= questions.length) {
-endGame();
-return;
-}
-const currentQuestion = questions[currentQuestionIndex];
-document.getElementById('questionEmoji').textContent = currentQuestion.emoji;
-document.getElementById('questionSentence').textContent = currentQuestion.sentence;
-document.getElementById('questionExplanation').textContent = currentQuestion.explanation;
-document.getElementById('questionExplanation').style.display = 'none';
-document.getElementById('answer').value = '';
-document.getElementById('feedback').textContent = '';
-const imageContainer = document.getElementById('questionImage');
-if (currentQuestion.image) {
-imageContainer.innerHTML = `<img src="${currentQuestion.image}" style="max-width: 100%; height: auto;">`;
-} else {
-imageContainer.innerHTML = '';
-}
-document.getElementById('answer').focus();
-}
-function startTimer() {
-timer = setInterval(function() {
-timeLeft--;
-document.getElementById('time').textContent = timeLeft;
-if (timeLeft <= 0) {
-endGame();
-}
-}, 1000);
-}
-function normalizeAnswer(answer) {
-return answer.toLowerCase()
-.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-.trim();
-}
-function checkAnswer() {
-if (!gameActive) return;
-const userAnswer = document.getElementById('answer').value;
-const feedbackDiv = document.getElementById('feedback');
-const explanationDiv = document.getElementById('questionExplanation');
-if (!userAnswer) {
-feedbackDiv.textContent = 'Por favor ingresa una respuesta';
-feedbackDiv.className = 'feedback incorrect';
-return;
-}
-const normalizedUserAnswer = normalizeAnswer(userAnswer);
-const currentQuestion = questions[currentQuestionIndex];
-let isCorrect = false;
-if (currentQuestion.correctAnswers && currentQuestion.correctAnswers.length > 0) {
-isCorrect = currentQuestion.correctAnswers.some(correctAnswer =>
-normalizeAnswer(correctAnswer) === normalizedUserAnswer
-);
-} else {
-const expectedAnswers = ["alimentos", "100", "paris"];
-isCorrect = normalizeAnswer(expectedAnswers[currentQuestionIndex]) === normalizedUserAnswer;
-}
-if (isCorrect) {
-score += 10;
-document.getElementById('score').textContent = score;
-feedbackDiv.textContent = '¡Respuesta correcta!';
-feedbackDiv.className = 'feedback correct';
-confetti({
-particleCount: 100,
-spread: 70,
-origin: { y: 0.2 }
-});
-} else {
-feedbackDiv.textContent = 'Respuesta incorrecta';
-feedbackDiv.className = 'feedback incorrect';
-}
-explanationDiv.style.display = 'block';
-setTimeout(() => {
-currentQuestionIndex++;
-if (currentQuestionIndex < questions.length) {
-displayCurrentQuestion();
-} else {
-endGame();
-}
-}, 2000);
-}
-function endGame() {
-clearInterval(timer);
-gameActive = false;
-document.getElementById('finalScore').textContent = score;
-const celebration = document.getElementById('celebration');
-celebration.style.display = 'flex';
-document.querySelector('.game-area').style.opacity = '0.5';
-}
-function restartGame() {
-currentQuestionIndex = 0;
-timeLeft = 60;
-score = 0;
-gameActive = true;
-document.getElementById('time').textContent = timeLeft;
-document.getElementById('score').textContent = score;
-document.getElementById('celebration').style.display = 'none';
-document.querySelector('.game-area').style.opacity = '1';
-displayCurrentQuestion();
-startTimer();
-}
-</script>
+    <div class="container">
+        <div class="header">
+            <h1>Juego de Palabras Mejorado</h1>
+        </div>
+        <div class="game-area">
+            <!-- Reloj creativo para el temporizador -->
+            <div class="timer-container">
+                <div class="clock">
+                    <div class="clock-face">
+                        <span id="time">60</span>
+                        <div class="clock-hand" id="clockHand"></div>
+                    </div>
+                </div>
+                <div class="score-display">Puntos: <span id="score">0</span></div>
+            </div>
+            
+            <img id="catImage" src="images/gato.jpg" alt="Gato con lentes" style="display: none; width: 300px; margin: 0 auto; border-radius: 5%;">
+            <center><div id="noSentencesMessage" class="typing-message"></div></center>
+            <div id="sentencesContainer" class="sentence-container">
+                <div class="emoji" id="questionEmoji"></div>
+                <img id="questionImage" class="question-image" style="display: none;">
+                <div class="sentence" id="questionSentence"></div>
+                <div class="explanation" id="questionExplanation"></div>
+            </div>
+            <input type="text" id="answer" placeholder="Ingresa tu respuesta">
+            <div style="display: flex; justify-content: center; gap: 10px;">
+                <button class="button" onclick="checkAnswer()">Enviar</button>
+                <button class="button" onclick="window.location.href='config.html'">Configuración</button>
+            </div>
+            <div id="feedback" class="feedback"></div>
+        </div>
+    </div>
+    
+    <!-- Celebration Screen -->
+    <div class="celebration" id="celebration">
+        <div class="celebration-content">
+            <h1>¡Felicidades!</h1>
+            <p>Has completado el juego con una puntuación de <span id="finalScore">0</span></p>
+            <button onclick="location.reload()">Jugar de nuevo</button>
+        </div>
+    </div>
+    
+    <!-- Game Over Screen -->
+    <div class="game-over" id="gameOver">
+        <div class="game-over-content">
+            <h1>¡Tiempo agotado!</h1>
+            <p>Obtuviste <span id="finalScoreLost">0</span> puntos</p>
+            <button onclick="location.reload()">Intentar de nuevo</button>
+        </div>
+    </div>
+    
+    <script>
+        // Load configuration from localStorage
+        const savedHistory = localStorage.getItem('history');
+        const questions = savedHistory ? JSON.parse(savedHistory) : [];
+        
+        let timeLeft = 60;
+        let score = 0;
+        let timer;
+        let currentQuestionIndex = 0;
+        let gameActive = true;
+
+        const catImage = document.getElementById('catImage');
+        const noSentencesMessage = document.getElementById('noSentencesMessage');
+        const questionImage = document.getElementById('questionImage');
+        const clockHand = document.getElementById('clockHand');
+
+        // Typewriter effect
+        function typeWriter() {
+            const message = "No hay oraciones configuradas";
+            noSentencesMessage.innerHTML = '';
+            noSentencesMessage.style.width = 'auto';
+            
+            let i = 0;
+            const typingInterval = setInterval(() => {
+                if (i < message.length) {
+                    noSentencesMessage.textContent += message.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typingInterval);
+                    noSentencesMessage.style.borderRight = 'none';
+                }
+            }, 100);
+        }
+
+        if (questions.length === 0) {
+            catImage.style.display = 'block';
+            typeWriter();
+        } else {
+            catImage.style.display = 'none';
+            displayCurrentQuestion();
+            startTimer();
+        }
+
+        function displayCurrentQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                endGame(true);
+                return;
+            }
+            
+            const currentQuestion = questions[currentQuestionIndex];
+            document.getElementById('questionEmoji').textContent = currentQuestion.emoji || '';
+            document.getElementById('questionSentence').textContent = currentQuestion.sentence || '';
+            document.getElementById('questionExplanation').textContent = currentQuestion.explanation || '';
+            document.getElementById('questionExplanation').style.display = 'none';
+            
+            // Handle image
+            if (currentQuestion.image) {
+                questionImage.src = currentQuestion.image;
+                questionImage.style.display = 'block';
+            } else {
+                questionImage.style.display = 'none';
+            }
+            
+            document.getElementById('answer').value = '';
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('answer').focus();
+        }
+
+        function startTimer() {
+            // Animación inicial del reloj
+            updateClockHand();
+            
+            timer = setInterval(function() {
+                timeLeft--;
+                document.getElementById('time').textContent = timeLeft;
+                updateClockHand();
+                
+                if (timeLeft <= 0) {
+                    endGame(false);
+                }
+            }, 1000);
+        }
+        
+        function updateClockHand() {
+            const degrees = (timeLeft / 60) * 360;
+            clockHand.style.animation = 'none';
+            void clockHand.offsetWidth; // Trigger reflow
+            clockHand.style.animation = `tick ${timeLeft}s linear infinite`;
+            clockHand.style.transform = `translateX(-50%) rotate(${degrees}deg)`;
+            
+            // Cambiar color según el tiempo restante
+            if (timeLeft <= 10) {
+                clockHand.style.backgroundColor = 'red';
+                clockHand.style.height = '35px';
+                document.querySelector('.clock').style.boxShadow = '0 0 15px rgba(255,0,0,0.5)';
+            } else if (timeLeft <= 20) {
+                clockHand.style.backgroundColor = 'orange';
+                clockHand.style.height = '32px';
+                document.querySelector('.clock').style.boxShadow = '0 0 15px rgba(255,165,0,0.5)';
+            } else {
+                clockHand.style.backgroundColor = 'red';
+                clockHand.style.height = '30px';
+                document.querySelector('.clock').style.boxShadow = '0 0 15px rgba(0,0,0,0.2)';
+            }
+        }
+
+        function normalizeAnswer(answer) {
+            return answer.toLowerCase()
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                .trim();
+        }
+
+        function checkAnswer() {
+            if (!gameActive) return;
+            const userAnswer = document.getElementById('answer').value;
+            const feedbackDiv = document.getElementById('feedback');
+            const explanationDiv = document.getElementById('questionExplanation');
+
+            if (!userAnswer) {
+                feedbackDiv.textContent = 'Por favor ingresa una respuesta';
+                feedbackDiv.className = 'feedback incorrect';
+                return;
+            }
+
+            const normalizedUserAnswer = normalizeAnswer(userAnswer);
+            const currentQuestion = questions[currentQuestionIndex];
+            let isCorrect = false;
+
+            if (currentQuestion.correctAnswers && currentQuestion.correctAnswers.length > 0) {
+                isCorrect = currentQuestion.correctAnswers.some(correctAnswer =>
+                    normalizeAnswer(correctAnswer) === normalizedUserAnswer
+                );
+            }
+
+            if (isCorrect) {
+                score += 10;
+                document.getElementById('score').textContent = score;
+                feedbackDiv.textContent = '¡Respuesta correcta! +10 puntos';
+                feedbackDiv.className = 'feedback correct';
+            } else {
+                feedbackDiv.textContent = 'Respuesta incorrecta';
+                feedbackDiv.className = 'feedback incorrect';
+                
+                // Show correct answers if answer was wrong
+                if (currentQuestion.correctAnswers && currentQuestion.correctAnswers.length > 0) {
+                    feedbackDiv.textContent += `. Respuestas correctas: ${currentQuestion.correctAnswers.join(', ')}`;
+                }
+            }
+            
+            explanationDiv.style.display = 'block';
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < questions.length) {
+                    displayCurrentQuestion();
+                } else {
+                    endGame(true);
+                }
+            }, 2000);
+        }
+
+        function createConfetti() {
+            const colors = ['#f00', '#0f0', '#00f', '#ff0', '#f0f', '#0ff', '#FF4500', '#FFD700', '#32CD32'];
+            const shapes = ['circle', 'square', 'triangle'];
+            const confettiCount = 200;
+            
+            for (let i = 0; i < confettiCount; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                
+                // Random shape
+                const shape = shapes[Math.floor(Math.random() * shapes.length)];
+                if (shape === 'circle') {
+                    confetti.style.borderRadius = '50%';
+                } else if (shape === 'triangle') {
+                    confetti.style.width = '0';
+                    confetti.style.height = '0';
+                    confetti.style.borderLeft = '6px solid transparent';
+                    confetti.style.borderRight = '6px solid transparent';
+                    confetti.style.borderBottom = '12px solid ' + colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.background = 'none';
+                }
+                
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.top = -20 + 'px';
+                confetti.style.width = Math.random() * 12 + 6 + 'px';
+                confetti.style.height = Math.random() * 12 + 6 + 'px';
+                confetti.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+                
+                document.body.appendChild(confetti);
+                
+                // Confetti animation
+                const animationDuration = Math.random() * 3 + 2;
+                confetti.animate([
+                    { top: '-20px', left: Math.random() * 100 + 'vw', opacity: 1 },
+                    { top: '100vh', left: Math.random() * 40 - 20 + parseFloat(confetti.style.left) + 'vw', opacity: 0 }
+                ], {
+                    duration: animationDuration * 1000,
+                    easing: 'cubic-bezier(0.1, 0.8, 0.9, 1)'
+                });
+                
+                // Remove confetti after animation
+                setTimeout(() => {
+                    confetti.remove();
+                }, animationDuration * 1000);
+            }
+        }
+
+        function endGame(completed) {
+            clearInterval(timer);
+            gameActive = false;
+            
+            if (completed) {
+                // Show victory celebration
+                document.getElementById('finalScore').textContent = score;
+                document.getElementById('celebration').style.display = 'flex';
+                document.querySelector('.game-area').style.opacity = '0.5';
+                createConfetti();
+                const confettiInterval = setInterval(createConfetti, 3000);
+                setTimeout(() => {
+                    clearInterval(confettiInterval);
+                }, 15000);
+            } else {
+                // Show game over screen
+                document.getElementById('finalScoreLost').textContent = score;
+                document.getElementById('gameOver').style.display = 'flex';
+                document.querySelector('.game-area').style.opacity = '0.5';
+            }
+        }
+
+        // Handle Enter key to submit answer
+        document.getElementById('answer').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+    </script>
 </body>
 </html>
